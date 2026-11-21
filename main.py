@@ -68,11 +68,15 @@ def hapus_catatan(nomor: int):
 
 @app.put("/catatan/{nomor}")
 def ubah_catatan(nomor: int, teks: str):
+    if not teks.strip():
+        raise HTTPException(status_code=400, detail="catatan tidak boleh kosong")
+
     catatan = muat()
     if nomor < 1 or nomor > len(catatan):
-        raise HTTPException (status_code=404, detail=f"catatan nomor {nomor} tidak ditemukan")
-    teks_lama =catatan [ nomor - 1]
-    catatan [nomor -1 ] = teks
+        raise HTTPException(status_code=404, detail=f"catatan nomor {nomor} tidak ditemukan")
+
+    teks_lama = catatan[nomor - 1]
+    catatan[nomor - 1] = teks.strip()
     simpan(catatan)
 
-    return {"pesan": "diubah", "teks_lama": teks_lama, "teks_baru": teks}
+    return {"pesan": "diubah", "teks_lama": teks_lama, "teks_baru": teks.strip()}
