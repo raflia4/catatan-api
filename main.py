@@ -32,11 +32,19 @@ def tentang():
 def lihat_catatan():
     return muat()
 
+
 @app.post("/catatan")
-def tambah_catatan (teks: str):
+def tambah_catatan(teks: str):
+    if not teks.strip():
+        raise HTTPException(
+            status_code=400,
+            detail="catatan tidak boleh kosong"
+        )
+
     catatan = muat()
-    catatan.append(teks)
+    catatan.append(teks.strip())
     simpan(catatan)
+
     return {"pesan": "tersimpan", "total": len(catatan)}
 
 @app.delete("/catatan/{nomor}")
